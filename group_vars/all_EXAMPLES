@@ -1,0 +1,8 @@
+---
+#mysql
+root_password: xxxxxxxx
+mysqluser: xxxx
+mysqlpasswd: xxxxxxxx
+
+#redis
+redis_passwd: xxxxxxxx

@@ -1,0 +1,60 @@
+---
+- name: 下载安装erlang RPM源
+  shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash
+  args:
+    warn: False
+- name: 下载安装rabbitmq RPM源
+  shell: curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash
+  args:
+    warn: False
+- name: 安装erlang、rabbitmq
+  yum:
+    name:
+      - erlang
+      - rabbitmq-server
+    state: present
+
+- name: 创建配置目录
+  file: path=/etc/systemd/system/rabbitmq-server.service.d state=directory mode=0755
+
+- name: 配置rabbitmq
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'limits.conf', dest: '/etc/systemd/system/rabbitmq-server.service.d/limits.conf' }
+    - { src: 'rabbitmq.conf', dest: '/etc/rabbitmq/rabbitmq.conf' }
+  notify: restart rabbitmq
+
+- name: 启动rabbitmq
+  service: name=rabbitmq-server state=started enabled=yes
+
+- name: 开启web管理
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+  notify: restart rabbitmq
+
+- name: 增加vhosts：fg
+  rabbitmq_vhost:
+    name: fg
+    state: present
+
+- name: 删除guest用户
+  rabbitmq_user:
+    user: guest
+    state: absent
+
+- name: 增加fg用户及授权
+  rabbitmq_user:
+    user: fg
+    password: "{{ mqpasswd }}"
+    tags: administrator
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+      - vhost: fg
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present

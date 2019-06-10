@@ -1,0 +1,14 @@
+# This repository only provides PHP 7.1 and its extensions
+# NOTICE: common dependencies are in "remi-safe"
+[remi-safe]
+name=Safe Remi's RPM repository for Enterprise Linux 7 - $basearch
+mirrorlist=http://cdn.remirepo.net/enterprise/7/safe/mirror
+enabled=1
+gpgcheck=0
+
+[remi-php71]
+name=Remi's PHP 7.1 RPM repository for Enterprise Linux 7 - $basearch
+mirrorlist=http://cdn.remirepo.net/enterprise/7/php71/mirror
+enabled=1
+gpgcheck=0
+

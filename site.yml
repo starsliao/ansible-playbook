@@ -1,0 +1,8 @@
+---
+- name: Install common nginx php nodejs mysql redis
+  hosts: 192.168.200.215
+  #hosts: 192.168.200.219
+  remote_user: root
+  gather_facts: false
+  roles:
+    - redis

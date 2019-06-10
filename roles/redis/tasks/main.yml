@@ -1,0 +1,62 @@
+---
+- name: 安装依赖:gcc,tcl,pip
+  yum:
+    name:
+      - gcc
+      - tcl
+      - python2-pip
+    state: present
+
+- name: PIP安装pexpect
+  pip:
+    name: pexpect
+
+- name: 下载redis-stable
+  get_url:
+    url: https://github.com/antirez/redis/archive/5.0.4.tar.gz
+    dest: /tmp/redis-stable.tar.gz
+    timeout: 600
+
+- name: 远程解压
+  unarchive:
+    src: /tmp/redis-stable.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: 编译redis
+  command: make
+  args:
+    chdir: /tmp/redis-5.0.4
+
+- name: 安装redis
+  command: make install
+  args:
+    chdir: /tmp/redis-5.0.4
+
+- name: 配置redis服务
+  expect:
+    command: /tmp/redis-5.0.4/utils/install_server.sh
+    responses:
+      'Please select the redis port for this instance: \[6379\] ': '6379'
+      'Please select the redis config file name \[\/etc\/redis\/6379.conf\] ': '/etc/redis/6379.conf'
+      'Please select the redis log file name \[\/var\/log\/redis_6379.log\] ': '/var/log/redis_6379.log'
+      'Please select the data directory for this instance \[\/var\/lib\/redis\/6379\] ': '/var/lib/redis/6379'
+      'Please select the redis executable path .*': '/usr/local/bin/redis-server'
+      'Is this ok\? Then press ENTER to go on or Ctrl-C to abort.': 'y'
+    echo: true
+
+- name: stop redis
+  command: /usr/sbin/service redis_6379 stop
+
+- name: 等待redis停止
+  wait_for:
+    port: 6379
+    state: stopped
+
+- name: 配置redis.conf
+  template: src=6379.conf.j2 dest=/etc/redis/6379.conf
+  notify: restart redis
+
+- name: 配置redis init
+  template: src=redis_6379.j2 dest=/etc/init.d/redis_6379
+  notify: restart redis

@@ -1,0 +1,63 @@
+[hc]
+192.168.200.215
+[base]
+localhost ansible_connection=local ansible_ssh_host=192.168.200.113
+lan-devops ansible_ssh_host=192.168.200.150
+lan-dns-245 ansible_ssh_host=192.168.200.245
+lan-gw-proxy-251 ansible_ssh_host=192.168.220.251
+lan-jumpbox ansible_ssh_host=192.168.200.111 ansible_ssh_port=60022
+lan-testing-3 ansible_ssh_host=192.168.200.3
+openstack.240-controller ansible_ssh_host=192.168.200.240
+openstack.241-node01 ansible_ssh_host=192.168.200.241
+
+[wl]
+wlsit-swf ansible_ssh_host=192.168.200.214
+wlsit-chess ansible_ssh_host=192.168.200.228
+wlsit-fish ansible_ssh_host=192.168.200.205
+wlsit-phpapi ansible_ssh_host=192.168.200.217
+wlsit-base ansible_ssh_host=192.168.200.227
+
+[okd]
+192.168.200.231
+192.168.200.212
+192.168.200.208
+
+[zbb]
+openshift.201-all01 ansible_ssh_host=192.168.200.201
+openshift.202-all03 ansible_ssh_host=192.168.200.202
+openshift.203-all02 ansible_ssh_host=192.168.200.203
+openstack.227-all ansible_ssh_host=192.168.10.227
+
+[int]
+os.43-sec ansible_ssh_host=192.168.200.43
+os.60-nginx ansible_ssh_host=192.168.200.60
+os.33-riak-cs-1 ansible_ssh_host=192.168.200.33
+os.36-mq2 ansible_ssh_host=192.168.200.36
+os2.219-int-mchat ansible_ssh_host=192.168.200.219
+
+[sit]
+os.13-test-by-1 ansible_ssh_host=192.168.200.13
+os.17-test-im-1 ansible_ssh_host=192.168.200.17
+os.24-test-crm-1 ansible_ssh_host=192.168.200.24
+os.27-test-php-1 ansible_ssh_host=192.168.200.27
+os.38-test-pt-1 ansible_ssh_host=192.168.200.38
+os.40-test-pg-m ansible_ssh_host=192.168.200.40
+os.41-test-api-1 ansible_ssh_host=192.168.200.41
+os.47-test-texas-1 ansible_ssh_host=192.168.200.47
+
+[pdev]
+os.31-pdev-chess-1 ansible_ssh_host=192.168.200.31
+os.22-pdev-hunter-1 ansible_ssh_host=192.168.200.22
+os.37-pdev-slotfruit-1 ansible_ssh_host=192.168.200.37
+os.39-pdev-pgmq-1 ansible_ssh_host=192.168.200.39
+os.46-pdev-phpapi-1 ansible_ssh_host=192.168.200.46
+vm.112-pdev-riak ansible_ssh_host=192.168.200.112
+[dev]
+os.26-dev-php-1 ansible_ssh_host=192.168.200.26
+os.34-dev-pt-1 ansible_ssh_host=192.168.200.34
+os.52-dev-api-1 ansible_ssh_host=192.168.200.52
+os.54-dev-texas-1 ansible_ssh_host=192.168.200.54
+os.55-dev-crm-1 ansible_ssh_host=192.168.200.55
+os.56-dev-im-1 ansible_ssh_host=192.168.200.56
+os.32-dev-pg-m ansible_ssh_host=192.168.200.32
+os.45-dev-by-1 ansible_ssh_host=192.168.200.45

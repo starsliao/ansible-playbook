@@ -1,0 +1,25 @@
+---
+- name: 配置mongod源
+  copy: src=mongod.repo dest=/etc/yum.repos.d/
+
+- name: 安装依赖与mongodb-org
+  yum:
+    name:
+      - libcurl
+      - openssl
+      - mongodb-org
+    state: present
+
+- name: 配置mongod
+  template: src=mongod.conf dest=/etc/mongod.conf
+  notify: restart mongod
+
+- name: 追加rc.local
+  blockinfile:
+    path: /etc/rc.local
+    block: |
+      echo never > /sys/kernel/mm/transparent_hugepage/enabled
+      echo never > /sys/kernel/mm/transparent_hugepage/defrag
+
+- name: 启动mongod
+  service: name=mongod state=started enabled=yes

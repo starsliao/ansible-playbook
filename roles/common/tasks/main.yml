@@ -1,0 +1,147 @@
+---
+- name: 安装epel源
+  yum: name=epel-release state=present
+
+- name: 安装常用软件
+  yum:
+    name:
+      - lrzsz
+      - python2-pip
+      - bash-completion
+      - bash-completion-extras
+      - telnet
+      - wget
+      - rsync
+      - vim-enhanced
+      - zip
+      - unzip
+      - chrony
+      - crontabs
+      - lsof
+      - gcc
+      - gcc-c++
+      - glibc
+      - libpcap-devel
+      - ncurses-devel
+      - psmisc
+      - net-tools
+      - iptables-services 
+    state: present
+
+- name: 卸载部分软件
+  yum:
+    name:
+      - PackageKit
+      - mariadb*
+      - ekiga
+      - evolution
+      - brasero
+      - abrt*
+      - cups
+      - avahi
+      - libreoffice-*
+      - empathy*
+      - rhythmbox*
+      - cheese
+      - totem
+    state: absent
+
+- name: 禁用服务
+  service: name={{ item }} state=stopped enabled=no
+  with_items:
+    - cups
+    - ip6tables
+    - libvirtd
+    - nfslock
+    - ntpd
+    - postfix
+    - sendmail
+    - firewalld
+    - rpcbind.socket
+    - rpcbind.service
+    - rpcidmapd
+  ignore_errors: yes
+
+- name: 删除用户
+  user: name={{ item }} state=absent
+  with_items:
+    - adm
+    - ftp
+    - lp
+    - sync
+    - shutdown
+    - halt
+    - news
+    - uucp
+    - operator
+    - games
+    - gopher
+  ignore_errors: yes
+
+- name: 删除组
+  group: name={{ item }} state=absent
+  with_items:
+    - adm
+    - lp
+    - news
+    - uucp
+    - games
+    - dip
+    - pppusers
+  ignore_errors: yes
+
+- name: 禁用SELINUX
+  #lineinfile:
+  #  dest: /etc/selinux/config
+  #  regexp: '^SELINUX='
+  #  line: 'SELINUX=disabled'
+  selinux:
+    state: disabled  
+
+- name: 增加/etc/bashrc
+  blockinfile:
+    path: /etc/bashrc 
+    block: |
+      export PROMPT_COMMAND='{ msg=$(history 1 | { read x y; echo $y; });logger "[uid=$(whoami)]":$(who am i):[`pwd`]"$msg"; }'
+      alias vi='vim'
+      alias ls='ls --color=auto --time-style=long-iso'
+      alias grep='grep --color=auto'
+      alias fgrep='fgrep --color=auto'
+      alias egrep='egrep --color=auto'
+      export PS1="\[\e[32;1m\][\[\e[35;1m\]\u\[\e[m\]@\[\e[36;1m\]\h \[\e[31;1m\]\W\[\e[32;1m\]]\[\e[36;1m\]\\$\[\e[m\]"
+
+- name: 增加/etc/profile
+  blockinfile:
+    path: /etc/profile
+    block: |
+      export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+      shopt -s histappend
+
+- name: 禁用IPV6
+  sysctl: name={{ item }} value=1 state=present reload=yes sysctl_set=yes
+  with_items:
+    - net.ipv6.conf.all.disable_ipv6
+    - net.ipv6.conf.default.disable_ipv6
+
+- name: 删除20-nproc.conf
+  file:
+    path: /etc/security/limits.d/20-nproc.conf
+    state: absent
+
+- name: 修改limits.conf
+  blockinfile:
+    path: /etc/security/limits.conf
+    block: |
+      *      soft    nproc   1048576
+      *      hard    nproc   1048576
+      *       soft    nofile  1048576
+      *       hard    nofile  1048576
+      root    soft    nofile  1048576
+      root    hard    nofile  1048576
+      root   soft    nproc   1048576
+      root   hard    nproc   1048576
+
+- name: 修改rc.local可执行
+  file:
+    path: /etc/rc.d/rc.local
+    mode: 0755

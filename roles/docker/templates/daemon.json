@@ -1,0 +1,9 @@
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com"
+  ],
+  "dns": [
+    "192.168.200.245"
+  ],
+  "bip": "172.172.200.1/24"
+}

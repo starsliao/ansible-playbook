@@ -1,0 +1,30 @@
+---
+- name: 安装REMI源
+  copy: src=remi-php71.repo dest=/etc/yum.repos.d/
+
+- name: 安装PHP7.1与扩展
+  yum: 
+    name:
+      - php-bcmath.x86_64
+      - php-common.x86_64
+      - php-devel.x86_64
+      - php-fpm
+      - php
+      - php-gd.x86_64
+      - php-mbstring.x86_64
+      - php-pecl-redis
+      - php-phpiredis
+      - php-pecl-mongodb.x86_64
+      - php-pecl-yac.x86_64
+      - php-pecl-yaconf.x86_64
+      - php-pecl-zip.x86_64
+      - php-pgsql.x86_64
+      - php-xmlrpc.x86_64
+      - php-pecl-swoole4.x86_64
+    state: present
+
+- name: 复制PHPINFO测试
+  copy: src=index.php dest=/etc/nginx/html/
+
+- name: 启动php-fpm
+  service: name=php-fpm state=started enabled=yes

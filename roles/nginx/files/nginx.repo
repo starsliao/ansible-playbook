@@ -1,0 +1,13 @@
+#Mainline version
+[nginx-Stable]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/7/$basearch/
+gpgcheck=0
+enabled=1
+
+#Mainline version
+[nginx-Mainline]
+name=nginx repo
+baseurl=http://nginx.org/packages/mainline/centos/7/$basearch/
+gpgcheck=0
+enabled=0

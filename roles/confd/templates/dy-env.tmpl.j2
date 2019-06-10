@@ -1,0 +1,2 @@
+{% raw %}{{range $key := ls "/php/dy/{% endraw %}{{ proenv }}{% raw %}"}}{{$key}}={{getv (printf "/php/dy/{% endraw %}{{ proenv }}{% raw %}/%s" $key)}}
+{{end}}{% endraw %}

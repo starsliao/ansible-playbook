@@ -1,0 +1,27 @@
+---
+- name: 下载confd
+  get_url:
+    url: https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64
+    dest: /usr/bin/confd
+    mode: 0755
+    checksum: sha256:255d2559f3824dd64df059bdc533fd6b697c070db603c76aaf8d1d5e6b0cc334
+
+- name: 创建配置目录
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+    - /etc/confd/conf.d
+    - /etc/confd/templates
+
+
+- name: 配置模板
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'dy-env.tmpl.j2', dest: '/etc/confd/templates/dy-env.tmpl' }
+    - { src: 'dy-env.toml.j2', dest: '/etc/confd/conf.d/dy-env.toml' }
+  notify: restart confd
+
+- name: 配置confd服务
+  copy: src=confd.service dest=/usr/lib/systemd/system/
+
+- name: 启动confd
+  service: name=confd state=started enabled=yes

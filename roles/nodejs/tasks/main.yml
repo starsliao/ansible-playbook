@@ -1,0 +1,6 @@
+---
+- name: 配置nodejs源
+  copy: src=nodesource-el7.repo dest=/etc/yum.repos.d/
+
+- name: 安装nodejs
+  yum: name=nodejs state=present 

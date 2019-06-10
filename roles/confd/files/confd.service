@@ -1,0 +1,9 @@
+[Unit]
+Description=Confd
+[Service]
+Environment='CONSUL_HTTP_TOKEN=xxxxxxxxxx'
+ExecStart=/usr/bin/confd -watch -backend consul -node 192.168.200.60:8500
+Restart=always
+SyslogIdentifier=confd
+[Install]
+WantedBy=basic.target

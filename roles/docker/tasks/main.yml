@@ -1,0 +1,48 @@
+---
+- name: 下载docker安装脚本
+  get_url:
+    url: https://get.docker.com
+    dest: /tmp/get-docker.sh
+    mode: 0755
+
+- name: 安装docker
+  shell: sh /tmp/get-docker.sh --mirror Aliyun
+
+- name: 追加sysctl.conf
+  blockinfile:
+    path: /etc/sysctl.conf
+    block: |
+      fs.file-max = 655360
+      vm.swappiness = 0
+      net.ipv4.tcp_max_syn_backlog = 40000
+      net.core.somaxconn = 40000
+      net.ipv4.tcp_fin_timeout = 15
+      net.ipv4.tcp_keepalive_intvl = 30
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables = 1
+- name: 优化sysctl.conf
+  sysctl: name={{ item }} value=1 state=present reload=yes sysctl_set=yes
+  with_items:
+    - net.ipv4.ip_forward
+    - net.ipv4.tcp_sack
+    - net.ipv4.tcp_window_scaling
+    - net.ipv4.tcp_tw_reuse
+    - net.ipv4.tcp_moderate_rcvbuf
+
+- name: 创建配置目录
+  file: path=/etc/docker state=directory mode=0755
+
+- name: 配置docker
+  template: src=daemon.json dest=/etc/docker/daemon.json
+  notify: restart docker
+
+- name: 启动docker
+  service: name=docker state=started enabled=yes
+
+- name: 下载docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64
+    dest: /bin/docker-compose
+    mode: 0755
+    checksum: sha256:bee6460f96339d5d978bb63d17943f773e1a140242dfa6c941d5e020a302c91b
+    timeout: 600

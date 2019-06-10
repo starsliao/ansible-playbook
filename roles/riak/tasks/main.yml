@@ -1,0 +1,18 @@
+---
+- name: 下载安装riak RPM源
+  shell: curl -s https://packagecloud.io/install/repositories/basho/riak/script.rpm.sh | sudo bash
+  args:
+    warn: False
+
+- name: 安装riak
+  yum:
+    name:
+      - riak.x86_64
+    state: present
+
+- name: 配置riak
+  template: src=riak.conf.j2 dest=/etc/riak/riak.conf
+  notify: restart riak
+
+- name: 启动riak
+  service: name=riak state=started enabled=yes

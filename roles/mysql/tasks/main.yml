@@ -1,0 +1,22 @@
+---
+- name: 安装mysql源
+  copy: src=mysql-community.repo dest=/etc/yum.repos.d/
+
+- name: 安装mysql
+  yum:
+    name:
+      - mysql-community-server
+      - MySQL-python
+    state: installed
+  notify:
+  - Find temporary password
+  - Set new password from temporary password
+  - 创建mysql用户
+  
+- name: 配置mysql
+  template: src=my.cnf dest=/etc/my.cnf
+  notify:
+  - restart mysqld
+
+- name: 启动mysql
+  service: name=mysqld state=started enabled=yes

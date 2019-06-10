@@ -1,0 +1,7 @@
+---
+- name: Install docker
+  hosts: os.60-nginx
+  remote_user: root
+  gather_facts: false
+  roles:
+    - riak
