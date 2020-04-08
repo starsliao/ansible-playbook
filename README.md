@@ -17,3 +17,5 @@ ansible-playbook hello.yml -i ~/hosts
 ansible-playbook site.yml -i ~/hosts
 
 ```
+
+ansible prod-* -m command -a "chage -l root" -b --become-method sudo
