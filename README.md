@@ -17,6 +17,7 @@ ansible-playbook hello.yml -i ~/hosts
 ansible-playbook site.yml -i ~/hosts
 
 ```
-
+```
 ansible prod-* -m command -a "chage -l root" -b --become-method sudo
 time ansible all -m shell -a 'chage -d `date -d "$(($RANDOM%60)) days ago" +%Y-%m-%d` root'
+```
